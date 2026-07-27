@@ -42,10 +42,11 @@ export default function LiffProvider({ children }) {
                 setProfile(userProfile);
               } catch (pErr) {
                 console.warn('[LIFF] Error fetching profile:', pErr);
+                setError(`ดึงโปรไฟล์ล้มเหลว (getProfile error): ${pErr.message || pErr}. กรุณาตรวจสอบสิทธิ์ Scopes (profile, openid) ใน LINE Developers Console`);
               }
             } else {
               setIsLoggedIn(false);
-              // Auto-login fallback if configured, or when inside LINE app
+              // Auto-login fallback when inside LINE app
               if (liff.isInClient()) {
                 liff.login();
               }
@@ -53,7 +54,7 @@ export default function LiffProvider({ children }) {
           })
           .catch((err) => {
             console.error('[LIFF] Initialization error:', err);
-            setError(err.message || 'LIFF Initialization failed');
+            setError(`LIFF Init Error: ${err.message || err}. กรุณาตั้งค่า NEXT_PUBLIC_LIFF_ID ใน Vercel Environment Variables`);
           })
           .finally(() => {
             setIsLoading(false);

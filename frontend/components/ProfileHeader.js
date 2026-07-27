@@ -25,37 +25,54 @@ export default function ProfileHeader() {
   }
 
   return (
-    <div className="glass-card profile-header">
-      <div className="profile-avatar-container">
-        {/* eslint-disable-next-img-element */}
-        <img
-          src={pictureUrl}
-          alt={displayName}
-          className="profile-avatar"
-          onError={(e) => {
-            e.target.src = defaultAvatar;
-          }}
-        />
-      </div>
-
-      <div className="profile-info">
-        <div className="profile-greeting">ยินดีต้อนรับ 👋</div>
-        <div className="profile-name">สวัสดี {displayName}</div>
-        <div className="status-badge">
-          <span className="status-dot"></span>
-          <span>{isLoggedIn ? 'เชื่อมต่อ LINE แล้ว' : 'LIFF Web Mode'}</span>
+    <>
+      <div className="glass-card profile-header">
+        <div className="profile-avatar-container">
+          {/* eslint-disable-next-img-element */}
+          <img
+            src={pictureUrl}
+            alt={displayName}
+            className="profile-avatar"
+            onError={(e) => {
+              e.target.src = defaultAvatar;
+            }}
+          />
         </div>
+
+        <div className="profile-info">
+          <div className="profile-greeting">ยินดีต้อนรับ 👋</div>
+          <div className="profile-name">สวัสดี {displayName}</div>
+          <div className="status-badge">
+            <span className="status-dot" style={{ backgroundColor: isLoggedIn ? '#10b981' : '#f59e0b' }}></span>
+            <span>{isLoggedIn ? 'เชื่อมต่อ LINE แล้ว' : 'ยังไม่ได้เข้าสู่ระบบ LINE'}</span>
+          </div>
+        </div>
+
+        {!isLoggedIn && liff && (
+          <button
+            onClick={() => liff.login()}
+            className="btn btn-primary"
+            style={{ marginLeft: 'auto', padding: '0.4rem 0.8rem', fontSize: '0.8rem', width: 'auto' }}
+          >
+            <LogIn size={14} /> Login
+          </button>
+        )}
       </div>
 
-      {!isLoggedIn && liff && (
-        <button
-          onClick={() => liff.login()}
-          className="btn btn-primary"
-          style={{ marginLeft: 'auto', padding: '0.4rem 0.8rem', fontSize: '0.8rem', width: 'auto' }}
+      {error && (
+        <div
+          className="glass-card"
+          style={{
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            padding: '0.75rem 1rem',
+            fontSize: '0.85rem',
+            color: '#f87171',
+          }}
         >
-          <LogIn size={14} /> Login
-        </button>
+          ⚠️ {error}
+        </div>
       )}
-    </div>
+    </>
   );
 }
