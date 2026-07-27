@@ -1,4 +1,3 @@
-const { Client } = require('@line/bot-sdk');
 const { askGeminiAboutAjarn } = require('./geminiService');
 
 /**
@@ -17,7 +16,7 @@ const AJARN_KEYWORDS = [
 /**
  * Main Webhook Event Handler for LINE
  * @param {Object} event - LINE event object
- * @param {Client} client - @line/bot-sdk Client instance
+ * @param {MessagingApiClient} client - MessagingApiClient instance
  */
 async function handleEvent(event, client) {
   if (event.type !== 'message' || event.message.type !== 'text') {
@@ -30,6 +29,15 @@ async function handleEvent(event, client) {
 
   console.log(`[LineHandler] Received message: "${text}" from userId: ${userId}`);
 
+  // Helper function to send reply message using @line/bot-sdk v11 API
+  const replyText = async (textMsg) => {
+    if (!client) return null;
+    return client.replyMessage({
+      replyToken,
+      messages: [{ type: 'text', text: textMsg }],
+    });
+  };
+
   // Rule 1: Greeting ("สวัสดี")
   if (text === 'สวัสดี' || text.toLowerCase() === 'hello' || text.toLowerCase() === 'hi') {
     let displayName = 'คุณ';
@@ -41,29 +49,20 @@ async function handleEvent(event, client) {
         console.warn(`[LineHandler] Failed to get user profile: ${err.message}`);
       }
     }
-    const replyText = `สวัสดีครับ คุณ ${displayName}`;
-    return client.replyMessage(replyToken, {
-      type: 'text',
-      text: replyText,
-    });
+    const greetingText = `สวัสดีครับ คุณ ${displayName}`;
+    return replyText(greetingText);
   }
 
   // Rule 2: Question about อ.วุฒิพงษ์ ชินศรี / อ.เณร
   const isAjarnQuery = AJARN_KEYWORDS.some((kw) => text.toLowerCase().includes(kw.toLowerCase()));
   if (isAjarnQuery) {
     const aiAnswer = await askGeminiAboutAjarn(text);
-    return client.replyMessage(replyToken, {
-      type: 'text',
-      text: aiAnswer,
-    });
+    return replyText(aiAnswer);
   }
 
   // Rule 3: Fallback Message
   const fallbackMessage = 'รอ Admin ติดต่อกลับสักครู่';
-  return client.replyMessage(replyToken, {
-    type: 'text',
-    text: fallbackMessage,
-  });
+  return replyText(fallbackMessage);
 }
 
 module.exports = {

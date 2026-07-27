@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Client, middleware } = require('@line/bot-sdk');
+const { messagingApi, middleware } = require('@line/bot-sdk');
 const { handleEvent } = require('./lineHandler');
 
 const app = express();
@@ -13,10 +13,12 @@ const lineConfig = {
   channelSecret: process.env.LINE_CHANNEL_SECRET || 'DUMMY_SECRET',
 };
 
-// Create LINE SDK Client
+// Create LINE SDK MessagingApiClient
 let client = null;
 if (process.env.LINE_CHANNEL_ACCESS_TOKEN && process.env.LINE_CHANNEL_ACCESS_TOKEN !== 'your_channel_access_token_here') {
-  client = new Client(lineConfig);
+  client = new messagingApi.MessagingApiClient({
+    channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
+  });
 }
 
 app.use(cors());
@@ -35,7 +37,6 @@ app.get('/api/health', (req, res) => {
 });
 
 // LINE Webhook Endpoint
-// Note: middleware(lineConfig) parses raw body for signature validation
 const lineMiddleware = (req, res, next) => {
   if (!process.env.LINE_CHANNEL_SECRET || process.env.LINE_CHANNEL_SECRET === 'your_channel_secret_here') {
     // Skip signature check in local dev without credentials
@@ -55,10 +56,8 @@ app.post('/api/webhook', lineMiddleware, express.json(), async (req, res) => {
     // Process all events asynchronously
     const results = await Promise.all(
       events.map((event) => {
-        // If client is not initialized due to missing token, log and return fallback
         if (!client) {
-          console.warn('[Webhook] LINE Client not configured. Dummy response.');
-          return Promise.resolve(null);
+          console.warn('[Webhook] LINE Client not configured with valid access token. Processing offline.');
         }
         return handleEvent(event, client);
       })

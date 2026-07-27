@@ -3,11 +3,11 @@ const { handleEvent } = require('../src/lineHandler');
 async function runTests() {
   console.log('--- Running Backend Logic Verification Tests ---');
 
-  // Dummy LINE client
+  // Mock LINE MessagingApiClient
   const mockClient = {
     getProfile: async (userId) => ({ displayName: 'สมชาย ใจดี' }),
-    replyMessage: async (replyToken, message) => {
-      return { replyToken, message };
+    replyMessage: async ({ replyToken, messages }) => {
+      return { replyToken, message: messages[0] };
     },
   };
 
