@@ -192,30 +192,30 @@ DIALOGFLOW_PROJECT_ID=your_project_id
 
 ## 6. รายการงานสำหรับการพัฒนา (Development Tasks Roadmap)
 
-- [ ] **Task 1: Project Initialization & Directory Setup**
+- [x] **Task 1: Project Initialization & Directory Setup**
   - สร้างโครงสร้างโปรเจกต์ (Backend: Express.js, Frontend: Next.js App Router)
   - ติดตั้ง Package สำคัญ: `@line/bot-sdk`, `@google/genai`, `@line/liff`, `axios`, `express`, `dotenv`, `cors`
-- [ ] **Task 2: Express Webhook & Auto-Reply Implementation**
+- [x] **Task 2: Express Webhook & Auto-Reply Implementation**
   - สร้าง Webhook Endpoint (`POST /api/webhook`) รองรับ signature validation
   - พัฒนา Handler สำหรับคำว่า `"สวัสดี"` -> ดึงชื่อผู้ใช้และตอบกลับ `สวัสดีครับ คุณ [displayName]`
   - พัฒนา Fallback Response -> ตอบกลับ `รอ Admin ติดต่อกลับสักครู่`
-- [ ] **Task 3: Gemini AI Integration (Grounding from https://wutthipong.info)**
+- [x] **Task 3: Gemini AI Integration (Grounding from https://wutthipong.info)**
   - พัฒนาโมดูล Scraping/Knowledge Fetcher หรือ System Instruction ให้ Gemini
   - ตั้งค่า Constraint: บังคับให้ Gemini ตอบคำถามเกี่ยวกับ อ.วุฒิพงษ์ ชินศรี / อ.เณร จากข้อมูลเว็บ `https://wutthipong.info` เท่านั้น
-- [ ] **Task 4: Next.js LIFF Frontend & Mobile-First UI**
+- [x] **Task 4: Next.js LIFF Frontend & Mobile-First UI**
   - ออกแบบ UI (Mobile-First) ด้วย CSS / Glassmorphism
   - ติดตั้ง LIFF SDK และสร้าง Provider/Hook สำหรับ `liff.init()` และ Auto-Login
   - พัฒนาหน้าแรกแสดง `สวัสดี [displayName]` และรูปภาพโปรไฟล์ `pictureUrl`
-- [ ] **Task 5: Business Card Form & Flex Message (`liff.sendMessages`)**
+- [x] **Task 5: Business Card Form & Flex Message (`liff.sendMessages`)**
   - สร้างฟอร์มกรอก "รหัสนักศึกษา" และ "หลักสูตรที่เรียน"
   - สร้างพรีวิว Flex Card นามบัตรตนเอง
   - พัฒนาฟังก์ชันสำหรับปุ่ม `"Send My Card"` ส่งเข้าแชทด้วย `liff.sendMessages()`
-- [ ] **Task 6: Share Coach Card (`liff.shareTargetPicker`)**
+- [x] **Task 6: Share Coach Card (`liff.shareTargetPicker`)**
   - สร้างโมดูล Flex Message สำหรับนามบัตร อ.เณร (วุฒิพงษ์ ชินศรี, อาจารย์ ม.รังสิต, ปุ่ม Website)
   - พัฒนาฟังก์ชันสำหรับปุ่ม `"Share Coach Card"` เรียกใช้ `liff.shareTargetPicker()`
-- [ ] **Task 7: QR Code Scanner (`liff.scanCodeV2`)**
+- [x] **Task 7: QR Code Scanner (`liff.scanCodeV2`)**
   - พัฒนาฟังก์ชันสำหรับปุ่ม `"Scan QR Code"`
   - จัดการผลลัพธ์จากการสแกน (แสดงผลบน UI / ตัวเลือกส่งเข้าแชท)
-- [ ] **Task 8: End-to-End Testing & Verification**
+- [x] **Task 8: End-to-End Testing & Verification**
   - ทดสอบ Webhook บน LINE OA
   - ทดสอบ LIFF App บนอุปกรณ์จริงผ่าน LINE Browser
