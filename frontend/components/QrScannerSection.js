@@ -16,18 +16,32 @@ export default function QrScannerSection() {
     setIsScanning(true);
     setStatusMsg(null);
 
-    if (liff && liff.isInClient() && liff.scanCodeV2) {
-      try {
-        const res = await liff.scanCodeV2();
-        if (res && res.value) {
-          setScanResult(res.value);
-          confetti({ particleCount: 60, spread: 60 });
+    if (liff && liff.isInClient()) {
+      const scanFn = liff.scanCodeV2 ? liff.scanCodeV2.bind(liff) : liff.scanCode ? liff.scanCode.bind(liff) : null;
+      
+      if (scanFn) {
+        try {
+          const res = await scanFn();
+          const resultText = typeof res === 'object' && res !== null ? (res.value || JSON.stringify(res)) : res;
+          if (resultText) {
+            setScanResult(resultText);
+            confetti({ particleCount: 60, spread: 60 });
+          }
+        } catch (err) {
+          console.error('[LIFF] scanCode error:', err);
+          setStatusMsg({
+            type: 'error',
+            text: `เกิดข้อผิดพลาดในการสแกน: ${err.message || err}. (กรุณาตรวจสอบว่าเปิด "Scan QR Code" ใน LINE Developers Console แล้วหรือยัง)`,
+          });
+        } finally {
+          setIsScanning(false);
         }
-      } catch (err) {
-        console.error('[LIFF] scanCodeV2 error:', err);
-        setStatusMsg({ type: 'error', text: `เกิดข้อผิดพลาดในการสแกน: ${err.message}` });
-      } finally {
+      } else {
         setIsScanning(false);
+        setStatusMsg({
+          type: 'error',
+          text: 'ไม่พบฟังก์ชัน Scan QR Code: กรุณาเปิดฟีเจอร์ "Scan QR Code" (หรือ "QR code reader") ใน LINE Developers Console > LIFF Tab ให้เป็น Enabled',
+        });
       }
     } else {
       // Mock scanner for desktop browser / testing environment
@@ -38,7 +52,7 @@ export default function QrScannerSection() {
         confetti({ particleCount: 50, spread: 50 });
         setStatusMsg({
           type: 'info',
-          text: 'สแกน QR Code (โหมดจำลอง เบราว์เซอร์) สำเร็จ!',
+          text: 'สแกน QR Code (โหมดจำลอง เบราว์เซอร์) สำเร็จ! (หากต้องการสแกนจริง ให้เปิดผ่านแอป LINE บนมือถือ)',
         });
       }, 700);
     }
